@@ -43,48 +43,22 @@ process.stdin.on('end', () => {
 });
 ```
 
-**Taking input in Java: Ostad**
+**Find Duplicate [See](https://codemama.io/codetest/participate/5e4cd069-90e3-450b-be7d-9234ac1b5d5d/problems/find-duplicate)**
 
 ```java
-// Rotate The Array
-import java.util.Scanner;
-import java.util.Arrays;
+function main (input) {
+    const [n, textData] = input.split("\r\n");
+    const data = textData.split(" ");
 
-class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        int n = scanner.nextInt();
-        int k = scanner.nextInt();
-
-        int[] data = new int[n];
-
-        for(int i=0; i<n; i++) {
-            data[i]=scanner.nextInt();
-        }
-
-        // System.out.println(n);
-        // System.out.println(k);
-        // System.out.println(Arrays.toString(data));
-
-        if(k==0) {
-            int temp = data[n-1];
-            for(int i=n-1; i>0; i--) {
-                data[i]=data[i-1];
+    for(let i=0; i<n-1; i++) {
+        for(let j=i+1; j<n; j++ ) {
+            if(data[i]==data[j]){
+                console.log(data[i]);
+                return 0;
             }
-            data[0]=temp;
-        } else if(k==1) {
-            int temp = data[0];
-            for(int i=0; i<n-1; i++) {
-                data[i]=data[i+1];
-            }
-            data[n-1]=temp;
-        }
 
-        for(int i=0; i<n; i++) {
-            System.out.print(data[i] + " ");
         }
-
     }
+    
 }
 ```
