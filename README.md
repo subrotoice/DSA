@@ -46,9 +46,10 @@ Here are some common types of linear data structures:
 
 Understanding these basic linear data structures is crucial for solving many computational problems and forms the foundation for more complex data structures and algorithms.
 
+[Mosh DSA](https://github.com/JuanJMendoza/DataStructures-and-Algorithms)
 
 # Ch-1: Array
-
+Java Array Basic
 ```java
 // Declaration
 type[] arrayName;
@@ -164,388 +165,7 @@ public class Array {
     }
 }
 ```
-**How Code sholuld be developed**
-**Step1: Commenting What are you going to do?**
-```java
-public void removeAt(int index) {
-    // Validate the index
-
-    // Shift the intems to the left to fill the holl
-    // [10, 20, 30, 40]
-    // index: 1
-    // 1 <- 2, 2 <- 3
-
-    // Reduct counter to srink
-}
-```
-**Step2: Do actual coding**
-```java
-public void removeAt(int index) {
-    // Validate the index
-    if(index<0 || index>=count) 
-        throw new IllegalArgumentException();
-
-    // Shift the intems to the left to fill the holl
-    // [10, 20, 30, 40]
-    // index: 1
-    // 1 <- 2, 2 <- 3
-    for(int i=index; i < count; i++)
-        items[i] = items[i+1];
-
-    // Reduce counter to srink
-    count--;
-}
-```
-**Java Dynamic Array: Vector, ArrayList**
-```java
-A linear data structure is a type of data structure where elements are arranged in a sequential manner, and each element is connected to its previous and next element. This organization allows for easy traversal and manipulation of the data, as elements are accessed one after another. Linear data structures can be static (fixed size) or dynamic (size can change during runtime).
-
-Here are some common types of linear data structures:
-
-### 1. Arrays
-- **Description**: An array is a collection of elements identified by index or key, where all elements are of the same type.
-- **Characteristics**: Fixed size, random access.
-- **Operations**: Access (O(1)), insertion (O(n)), deletion (O(n)).
-
-### 2. Linked Lists
-- **Description**: A linked list is a sequence of nodes where each node contains data and a reference (or link) to the next node in the sequence.
-- **Types**: Singly linked list, doubly linked list, circular linked list.
-- **Characteristics**: Dynamic size, sequential access.
-- **Operations**: Access (O(n)), insertion (O(1) if at the beginning), deletion (O(1) if at the beginning).
-
-### 3. Stacks
-- **Description**: A stack is a collection of elements that follows the Last In, First Out (LIFO) principle.
-- **Characteristics**: Dynamic size, elements are added and removed from the same end (top).
-- **Operations**: Push (O(1)), pop (O(1)), peek (O(1)).
-
-### 4. Queues
-- **Description**: A queue is a collection of elements that follows the First In, First Out (FIFO) principle.
-- **Types**: Simple queue, circular queue, priority queue, double-ended queue (deque).
-- **Characteristics**: Dynamic size, elements are added at the rear and removed from the front.
-- **Operations**: Enqueue (O(1)), dequeue (O(1)), peek (O(1)).
-
-### 5. Strings
-- **Description**: A string is a sequence of characters and is often treated as a linear data structure because of its sequential nature.
-- **Characteristics**: Can be fixed or dynamic size depending on the programming language.
-- **Operations**: Access (O(1)), concatenation (O(n)), substring (O(n)).
-
-### Advantages of Linear Data Structures
-- **Simplicity**: Easy to implement and understand.
-- **Efficiency**: Good performance for simple operations and sequential access.
-
-### Disadvantages of Linear Data Structures
-- **Fixed Size**: Arrays have a fixed size which can be limiting.
-- **Sequential Access**: Linked lists require sequential access, which can be slower for large datasets compared to random access structures.
-- **Memory Usage**: Linked lists require additional memory for pointers.
-
-### Use Cases
-- **Arrays**: Used for storing and accessing data with an index, such as lists of items.
-- **Linked Lists**: Used in scenarios where frequent insertion and deletion operations are required.
-- **Stacks**: Used in function call management, undo mechanisms in software, and syntax parsing.
-- **Queues**: Used in scheduling algorithms, order processing systems, and breadth-first search algorithms.
-
-Understanding these basic linear data structures is crucial for solving many computational problems and forms the foundation for more complex data structures and algorithms.
-
-
-# Ch-1: Array
-
-```java
-// Declaration
-type[] arrayName;
-int[] myArray;
-String[] myStringArray;
-
-// Instantiation
-myArray = new int[10]; // array of 10 integers
-myStringArray = new String[5]; // array of 5 strings
-
-int[] myArray = new int[10];
-String[] myStringArray = new String[5];
-
-// Initialization
-int[] myArray = {1, 2, 3, 4, 5};
-String[] myStringArray = {"Hello", "World", "Java"};
-
-```
-
-In Java, if you assign one array to another, such as arrayOne = arrayTwo, you are not copying the contents of the array. Instead, you are copying the reference, which means both arrayOne and arrayTwo will refer to the same array in memory.
-
-```java
-int[] arrayOne = {1, 2, 3};
-int[] arrayTwo = {4, 5, 6};
-
-// Assign arrayTwo to arrayOne
-arrayOne = arrayTwo;
-
-// Now both arrayOne and arrayTwo point to the same array {4, 5, 6}
-System.out.println("arrayOne: " + Arrays.toString(arrayOne)); // Output: [4, 5, 6]
-System.out.println("arrayTwo: " + Arrays.toString(arrayTwo)); // Output: [4, 5, 6]
-```
-
-## Creating Array, Insert, Remove, Print
-
-```java
-// Main.java
-package com.subroto;
-
-import java.util.Arrays;
-
-public class Main {
-    public static void main(String[] args) {
-        Array numbers = new Array(3);
-        numbers.insert(20);
-        numbers.insert(30);
-        numbers.insert(40);
-        numbers.insert(50);
-        numbers.insert(660);
-        numbers.removeAt(4);
-        System.out.println(numbers.indexOf(200));
-        numbers.print();
-    }
-}
-```
-
-```java
-// Array.java (Array Class)
-public class Array {
-    private int[] items;
-    private int count;
-
-    public Array(int length) {
-        items = new int[length];
-    }
-
-    public void print() {
-        for (int i =0; i<count;i++) {
-            System.out.println(items[i]);
-        }
-    }
-
-    public void insert(int item){
-        // If the array is full, resize it
-        if (items.length == count) {
-            // Create a new array (twice the size)
-            int[] newItems = new int[count*2];
-
-            // Copy all the existing items
-            for (int i=0; i<count; i++)
-                newItems[i]=items[i];
-
-            // Set "items" to this new array
-            items=newItems;
-        }
-        // copy all existing items
-        items[count++]=item;
-    }
-
-    public int indexOf(int item) {
-        // if we find it, return index
-        // Otherwishe, return -1
-        for(int i = 0; i < count; i++) 
-            if (items[i]==item) 
-                return i;
-                
-            return -1;
-    }
-
-    public void removeAt(int index) {
-        // Validate the index
-        if(index<0 || index>=count) 
-            throw new IllegalArgumentException();
-
-        // Shift the intems to the left to fill the holl
-        // [10, 20, 30, 40]
-        // index: 1
-        // 1 <- 2, 2 <- 3
-        for(int i=index; i < count; i++)
-            items[i] = items[i+1];
-
-        count--;
-    }
-}
-```
-**How Code sholuld be developed**
-**Step1: Commenting What are you going to do?**
-```java
-public void removeAt(int index) {
-    // Validate the index
-
-    // Shift the intems to the left to fill the holl
-    // [10, 20, 30, 40]
-    // index: 1
-    // 1 <- 2, 2 <- 3
-
-    // Reduct counter to srink
-}
-```
-**Step2: Do actual coding**
-A linear data structure is a type of data structure where elements are arranged in a sequential manner, and each element is connected to its previous and next element. This organization allows for easy traversal and manipulation of the data, as elements are accessed one after another. Linear data structures can be static (fixed size) or dynamic (size can change during runtime).
-
-Here are some common types of linear data structures:
-
-### 1. Arrays
-- **Description**: An array is a collection of elements identified by index or key, where all elements are of the same type.
-- **Characteristics**: Fixed size, random access.
-- **Operations**: Access (O(1)), insertion (O(n)), deletion (O(n)).
-
-### 2. Linked Lists
-- **Description**: A linked list is a sequence of nodes where each node contains data and a reference (or link) to the next node in the sequence.
-- **Types**: Singly linked list, doubly linked list, circular linked list.
-- **Characteristics**: Dynamic size, sequential access.
-- **Operations**: Access (O(n)), insertion (O(1) if at the beginning), deletion (O(1) if at the beginning).
-
-### 3. Stacks
-- **Description**: A stack is a collection of elements that follows the Last In, First Out (LIFO) principle.
-- **Characteristics**: Dynamic size, elements are added and removed from the same end (top).
-- **Operations**: Push (O(1)), pop (O(1)), peek (O(1)).
-
-### 4. Queues
-- **Description**: A queue is a collection of elements that follows the First In, First Out (FIFO) principle.
-- **Types**: Simple queue, circular queue, priority queue, double-ended queue (deque).
-- **Characteristics**: Dynamic size, elements are added at the rear and removed from the front.
-- **Operations**: Enqueue (O(1)), dequeue (O(1)), peek (O(1)).
-
-### 5. Strings
-- **Description**: A string is a sequence of characters and is often treated as a linear data structure because of its sequential nature.
-- **Characteristics**: Can be fixed or dynamic size depending on the programming language.
-- **Operations**: Access (O(1)), concatenation (O(n)), substring (O(n)).
-
-### Advantages of Linear Data Structures
-- **Simplicity**: Easy to implement and understand.
-- **Efficiency**: Good performance for simple operations and sequential access.
-
-### Disadvantages of Linear Data Structures
-- **Fixed Size**: Arrays have a fixed size which can be limiting.
-- **Sequential Access**: Linked lists require sequential access, which can be slower for large datasets compared to random access structures.
-- **Memory Usage**: Linked lists require additional memory for pointers.
-
-### Use Cases
-- **Arrays**: Used for storing and accessing data with an index, such as lists of items.
-- **Linked Lists**: Used in scenarios where frequent insertion and deletion operations are required.
-- **Stacks**: Used in function call management, undo mechanisms in software, and syntax parsing.
-- **Queues**: Used in scheduling algorithms, order processing systems, and breadth-first search algorithms.
-
-Understanding these basic linear data structures is crucial for solving many computational problems and forms the foundation for more complex data structures and algorithms.
-
-
-# Ch-1: Array
-
-```java
-// Declaration
-type[] arrayName;
-int[] myArray;
-String[] myStringArray;
-
-// Instantiation
-myArray = new int[10]; // array of 10 integers
-myStringArray = new String[5]; // array of 5 strings
-
-int[] myArray = new int[10];
-String[] myStringArray = new String[5];
-
-// Initialization
-int[] myArray = {1, 2, 3, 4, 5};
-String[] myStringArray = {"Hello", "World", "Java"};
-
-```
-
-In Java, if you assign one array to another, such as arrayOne = arrayTwo, you are not copying the contents of the array. Instead, you are copying the reference, which means both arrayOne and arrayTwo will refer to the same array in memory.
-
-```java
-int[] arrayOne = {1, 2, 3};
-int[] arrayTwo = {4, 5, 6};
-
-// Assign arrayTwo to arrayOne
-arrayOne = arrayTwo;
-
-// Now both arrayOne and arrayTwo point to the same array {4, 5, 6}
-System.out.println("arrayOne: " + Arrays.toString(arrayOne)); // Output: [4, 5, 6]
-System.out.println("arrayTwo: " + Arrays.toString(arrayTwo)); // Output: [4, 5, 6]
-```
-
-## Exercise: Creating Array, Insert, Remove, Print
-
-```java
-// Main.java
-package com.subroto;
-
-import java.util.Arrays;
-
-public class Main {
-    public static void main(String[] args) {
-        Array numbers = new Array(3);
-        numbers.insert(20);
-        numbers.insert(30);
-        numbers.insert(40);
-        numbers.insert(50);
-        numbers.insert(660);
-        numbers.removeAt(4);
-        System.out.println(numbers.indexOf(200));
-        numbers.print();
-    }
-}
-```
-
-```java
-// Array.java (Array Class)
-public class Array {
-    private int[] items;
-    private int count;
-
-    public Array(int length) {
-        items = new int[length];
-    }
-
-    public void print() {
-        for (int i =0; i<count;i++) {
-            System.out.println(items[i]);
-        }
-    }
-
-    public void insert(int item){
-        // If the array is full, resize it
-        if (items.length == count) {
-            // Create a new array (twice the size)
-            int[] newItems = new int[count*2];
-
-            // Copy all the existing items
-            for (int i=0; i<count; i++)
-                newItems[i]=items[i];
-
-            // Set "items" to this new array
-            items=newItems;
-        }
-        // copy all existing items
-        items[count++]=item;
-    }
-
-    public int indexOf(int item) {
-        // if we find it, return index
-        // Otherwishe, return -1
-        for(int i = 0; i < count; i++) 
-            if (items[i]==item) 
-                return i;
-                
-            return -1;
-    }
-
-    public void removeAt(int index) {
-        // Validate the index
-        if(index<0 || index>=count) 
-            throw new IllegalArgumentException();
-
-        // Shift the intems to the left to fill the holl
-        // [10, 20, 30, 40]
-        // index: 1
-        // 1 <- 2, 2 <- 3
-        for(int i=index; i < count; i++)
-            items[i] = items[i+1];
-
-        count--;
-    }
-}
-```
-**How Code sholuld be developed**
+**How Code sholuld be developed**<br>
 **Step1: Commenting What are you going to do?**
 ```java
 public void removeAt(int index) {
@@ -799,3 +419,94 @@ public class LinkedList {
 }
 
 ```
+
+## Singly and Doubly Linked list
+![https://prnt.sc/OJT_bOEJEWlP](https://media.geeksforgeeks.org/wp-content/cdn-uploads/gq/2014/03/DLL1.png)
+- Here if you want to delete second last item then need not traverse whole list. It is O(1) operation.
+
+## Exercise: Reversiong a Linked List
+```java
+// Reverse Linked Lists
+// 10 <- 20 -> 30 -> 40
+// p    c       n
+//      p       c     n
+//              p     c     n
+public void reverse() {
+    if (isEmpty()) return;
+    
+    var previous = first; 
+    var current = first.next; 
+    var endItem= first;
+    endItem.next=null;
+
+    while (current != null) {
+        var next = current.next; 
+        current.next = previous;
+        previous=current;
+        current=next;
+    }
+
+    first=previous;
+    last=endItem;
+    }
+```
+## Find k th node from the end of a linked list
+```java
+// 10 -> 20 -> 30 -> 40
+public int getKthFromTheEnd(int k) {
+    if (isEmpty()) 
+        throw new IllegalStateException();
+    var a = first;
+    var b = first;
+    for(int i = 0; i < k-1; i++) {
+        b=b.next;
+        if (b == null) 
+            throw new IllegalArgumentException();
+
+    }
+
+    while (b != last) {
+        a=a.next;
+        b=b.next;            
+    }
+
+    return a.value;
+
+}
+```
+
+# Stacks - Last In First Out (LIFO)
+Internally we use array or linked lists to store the object in a stack. So stack is the wrapper of array or linked lists which gives us different way of storing and accessing object.
+
+- Implement the undo feature
+- Build Navigation
+
+![https://prnt.sc/B40St89n5LaX](https://cdn.pixabay.com/photo/2016/03/31/19/16/book-1294864_1280.png)
+
+## Operations 4. All operation O(1)
+- push(item)
+- pop()
+- peek() // peek from the top without deleting item.
+- isEmpty()
+
+## Java Stack
+```java
+import java.util.Stack;
+
+public class Main {
+    public static void main(String[] args) {
+        Stack<Integer> stack = new Stack<>();
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+        System.out.println(stack);
+        var top = stack.pop();
+        System.out.println(top);
+        System.out.println(stack);
+        top = stack.peek();
+        System.out.println(20);
+    }
+}
+```
+
+## Exercise: Reversing a string

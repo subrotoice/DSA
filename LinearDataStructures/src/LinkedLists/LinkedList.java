@@ -123,6 +123,51 @@ public class LinkedList {
         return array;
     }
 
+    // Reverse Linked Lists
+    // 10 <- 20 -> 30 -> 40
+    // p    c       n
+    //      p       c     n
+    //              p     c     n
+    public void reverse() {
+        if (isEmpty()) return;
+        
+        var previous = first; 
+        var current = first.next; 
+        var endItem= first;
+        endItem.next=null;
+
+        while (current != null) {
+            var next = current.next; 
+            current.next = previous;
+            previous=current;
+            current=next;
+        }
+
+        first=previous;
+        last=endItem;
+    }
+
+    // Find k th node from the end of a linked list. 10 -> 20 -> 30 -> 40
+    public int getKthFromTheEnd(int k) {
+        if (isEmpty()) 
+            throw new IllegalStateException();
+        var a = first;
+        var b = first;
+        for(int i = 0; i < k-1; i++) {
+            b=b.next;
+            if (b == null) 
+                throw new IllegalArgumentException();
+
+        }
+
+        while (b != last) {
+            a=a.next;
+            b=b.next;            
+        }
+
+        return a.value;
+
+    }
 
     private boolean isEmpty() {
         return first == null;
