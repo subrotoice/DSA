@@ -891,6 +891,501 @@ public class Stack {
 }
 ```
 
-```java
+# Queues
 
+![https://prnt.sc/dXcCM65gJWCG](https://media.geeksforgeeks.org/wp-content/uploads/20220816162225/Queue.png)
+
+## Application
+
+- Printers
+- Operation Systems
+- Web Server
+- Live support systems
+
+## Operations
+
+- Enqueue
+- Dequeue
+- Peek
+- isEmpty
+- isFull
+
+## Java Queue
+
+```java
+import java.util.ArrayDeque;
+import java.util.Queue;
+
+public class Main {
+    public static void main(String[] args) {
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(10);
+        queue.add(20);
+        queue.add(30);
+        var front = queue.remove();
+        System.out.println(front);
+        System.out.println(queue);
+    }
+}
 ```
+
+## Exercise: Reversiong a Queue (Queue: [10, 20, 30] keep it in Stack [10, 20, 30] and then keep it back to Queue [30, 20, 10])
+
+**Here build in Main class**
+
+```java
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
+public class Main {
+    public static void main(String[] args) {
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(10);
+        queue.add(20);
+        queue.add(30);
+        reverse(queue);
+
+        System.out.println(queue);
+    }
+
+    public static void reverse(Queue<Integer> queue) {
+        Stack<Integer> stack = new Stack<>();
+        while (!queue.isEmpty())
+            stack.push(queue.remove());
+
+        while (!stack.empty())
+            queue.add(stack.pop());
+    }
+}
+```
+
+## Exercise: Building a Queue Using an Array
+
+### Build in 3 ways
+
+1. Array
+2. LinkedList
+3. Stack
+
+```java
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayQueue arrayQueue = new ArrayQueue();
+        arrayQueue.enqueue(12);
+        arrayQueue.enqueue(20);
+        arrayQueue.enqueue(30);
+        arrayQueue.enqueue(40);
+        arrayQueue.enqueue(50);
+        var front = arrayQueue.dequeue();
+        arrayQueue.dequeue();
+        // arrayQueue.dequeue();
+
+        System.out.println("Front: " + front);
+        System.out.println(arrayQueue.isEmpty());
+        System.out.println("Total items: " + arrayQueue.count());
+        System.out.println(arrayQueue.toString());
+    }
+
+}
+```
+
+```java
+// My Solution
+// Queue/ArrayQueue.java
+import java.util.Arrays;
+
+public class ArrayQueue {
+    private int[] queue = new int[5];
+    private int front = 0;
+    private int rear = 0;
+
+    public void enqueue(int item) {
+        if (isFull())
+            throw new IllegalStateException();
+
+        queue[rear++] = item;
+    }
+
+    public int dequeue() {
+        if (isEmpty())
+            throw new IllegalStateException();
+
+        return queue[front++];
+    }
+
+    public int peek() {
+        return queue[front];
+    }
+
+    public boolean isEmpty() {
+        // System.out.println(front);
+        // System.out.println(rear);
+        return front >= rear;
+    }
+
+    public boolean isFull() {
+        return queue.length <= rear;
+    }
+
+    public int count() {
+        return rear - front;
+    }
+
+    @Override
+    public String toString() {
+        var content = Arrays.copyOfRange(queue, front, rear);
+        return Arrays.toString(content);
+    }
+
+}
+```
+
+## Using circular array (Mosh)
+
+![https://prnt.sc/dh7QzRXZ7lR3](https://scanftree.com/Data_Structure/circularqueues.png)
+![https://prnt.sc/kLrrV1NIOCxC](https://www.simplilearn.com/ice9/free_resources_article_thumb/Circular_incrementation_in_Circular_queue.png)
+
+```java
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayQueue arrayQueue = new ArrayQueue(5);
+        arrayQueue.enqueue(12);
+        arrayQueue.enqueue(20);
+        arrayQueue.enqueue(30);
+        arrayQueue.enqueue(40);
+        arrayQueue.enqueue(50);
+        var front = arrayQueue.dequeue();
+        arrayQueue.dequeue();
+        arrayQueue.enqueue(60);
+        arrayQueue.enqueue(70);
+
+        System.out.println("Front: " + front);
+        System.out.println(arrayQueue.isEmpty());
+        System.out.println("Total items: " + arrayQueue.count());
+        System.out.println(arrayQueue.toString());
+
+    }
+}
+```
+
+- Here is proper way of object oriented programming. Constructer er return type thake na.
+
+```java
+// /Queue/ArrayQueue.java
+import java.util.Arrays;
+
+public class ArrayQueue {
+    private int[] queue;
+    private int front = 0;
+    private int rear = 0;
+    private int count = 0;
+
+    public ArrayQueue(int capacity) {
+        queue = new int[capacity];
+    }
+
+
+    public void enqueue(int item) {
+
+        if (queue.length <= count)
+            throw new IllegalStateException();
+
+        queue[rear] = item;
+        rear = (rear+1) % queue.length;
+        count++;
+        System.out.println(count);
+    }
+
+    public int dequeue() {
+        if (isEmpty())
+            throw new IllegalStateException();
+
+        var item = queue[front];
+        queue[front] = 0;
+        front = (front + 1) % queue.length;
+        count--;
+        System.out.println(count);
+        return item;
+    }
+
+    public int peek() {
+        return queue[front];
+    }
+
+    public boolean isEmpty() {
+        return count == 0;
+        // return front >= rear;
+    }
+
+    public boolean isFull() {
+        return queue.length <= rear;
+    }
+
+    public int count() {
+        return count;
+    }
+
+    @Override
+    public String toString() {
+        // var content = Arrays.copyOfRange(queue, front, rear);
+        return Arrays.toString(queue);
+    }
+
+}
+```
+
+## Exercise: Building a Queue Using Stacks
+
+- Here use two stack, stack1 and stack2. stack1 is using for enqueue and for dequeue copy from stack1 to stack2 then pop.
+- stack1 [10, 20, 30], so stack2 [30, 20, 10] if pop from stack2 we get 10 which is actual queue front
+
+```java
+// Main.java
+import java.util.ArrayDeque;
+import java.util.Queue;
+import java.util.Stack;
+
+public class Main {
+    public static void main(String[] args) {
+        QueueWIthTwoStacks queueWIthTwoStacks = new QueueWIthTwoStacks();
+
+        queueWIthTwoStacks.enqueue(10);
+        queueWIthTwoStacks.enqueue(20);
+        queueWIthTwoStacks.enqueue(30);
+
+        var frontPeek = queueWIthTwoStacks.peek();
+        System.out.println(frontPeek);
+
+    }
+
+}
+
+// /Queue/QUeueWithTwoStacks.java
+import java.util.Stack;
+
+public class QueueWIthTwoStacks {
+    private Stack<Integer> stack1 = new Stack();
+    private Stack<Integer> stack2 = new Stack();
+
+    public void enqueue(int item) {
+        stack1.push(item);
+    }
+
+    public int dequeue() {
+        moveStack1ToStack2();
+
+        return stack2.pop();
+
+    }
+
+    public int peek() {
+        moveStack1ToStack2();
+
+        return stack2.peek();
+    }
+
+    private void moveStack1ToStack2() {
+        if (isEmpty())
+        throw new IllegalArgumentException();
+
+        if(stack2.empty())
+            while (!stack1.empty())
+                stack2.push(stack1.pop());
+    }
+
+    public boolean isEmpty() {
+            return stack1.empty() && stack2.empty();
+    }
+}
+```
+
+## Priority Queue
+
+```java
+// Java Library
+import java.util.PriorityQueue;
+public class Main {
+    public static void main(String[] args) {
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>();
+
+        priorityQueue.add(5);
+        priorityQueue.add(1);
+        priorityQueue.add(3);
+        priorityQueue.add(2);
+
+        while (!priorityQueue.isEmpty())
+            System.out.println(priorityQueue.remove()); // 1, 2, 3, 5 By default smallest number will come out first
+
+    }
+}
+```
+
+## Exercise: Building a Priority Queue
+
+```java
+// My Solution,
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        PriorityQueue priorityQueue = new PriorityQueue(5);
+
+        priorityQueue.add(1);
+        priorityQueue.add(3);
+        priorityQueue.add(5);
+        priorityQueue.add(7);
+        priorityQueue.add(2);
+
+        System.out.println(priorityQueue.toString());
+
+    }
+
+}
+
+//PriorityQueue.java
+import java.util.Arrays;
+
+public class PriorityQueue {
+    private int[] queue;
+    private int count = 0;
+
+    public PriorityQueue(int capacity) {
+        queue = new int[capacity];
+    }
+
+
+    public void add(int item) {
+        if (count == queue.length)
+            throw new IllegalStateException();
+
+        if (count == 0) {
+            queue[0] = item;
+            count++;
+            return;
+        }
+
+        // [1, 3, 5, 7] insert(2)
+        // [1, 3, 3, 5, 7] insert(2)
+        // [0, 1, 2, 3, 4] insert(2)
+        var limit = count - 1;
+        // Shifting Items
+        while (limit >= 0) {
+            if(queue[limit] < item) // 1 < 2
+                break;
+
+            queue[limit + 1] = queue[limit--];
+        }
+
+        queue[limit + 1] = item;
+        count++;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println("Count: " + count);
+        return Arrays.toString(queue);
+    }
+
+}
+```
+
+- Refactoring some code. Select code -> Right click -> Move to Method
+
+```java
+//Main.java (Mosh And MySolution)
+public class Main {
+    public static void main(String[] args) {
+        PriorityQueue priorityQueue = new PriorityQueue(5);
+
+        priorityQueue.add(6);
+        priorityQueue.add(3);
+        priorityQueue.add(5);
+        priorityQueue.add(7);
+        priorityQueue.add(2);
+        System.out.println(priorityQueue.toString());
+
+        while (!priorityQueue.isEmpty())
+        System.out.println(priorityQueue.remove());
+        System.out.println(priorityQueue.toString());
+
+    }
+
+}
+
+// ProirityQueue.java
+import java.nio.channels.IllegalSelectorException;
+import java.util.Arrays;
+
+public class PriorityQueue {
+    private int[] queue;
+    private int count = 0;
+
+    public PriorityQueue(int capacity) {
+        queue = new int[capacity];
+    }
+
+    public void add(int item) {
+        if (isFull())
+            throw new IllegalStateException();
+
+        int i = shiftItemsToInsert(item);
+
+        queue[i] = item;
+        count++;
+    }
+
+    private int shiftItemsToInsert(int item) {
+        // [1, 3, 5, 7] insert(2)
+        // [1, 3, 3, 5, 7] insert(2)
+        // [0, 1, 2, 3, 4] insert(2)
+        int i;
+        // Shifting Items
+        for(i = count - 1; i >= 0; i--) {
+            if(queue[i] < item) // 1 < 2
+                break;
+
+            queue[i + 1] = queue[i];
+        }
+
+        return i + 1;
+    }
+
+    public int remove() {
+        if(isEmpty())
+            throw new IllegalSelectorException();
+
+        int temp = queue[0];
+        for(int i = 0; i <= count - 2; i++)
+            queue[i] = queue[i + 1];
+
+        queue[count - 1] = 0;
+        count --;
+        return temp;
+    }
+
+    public boolean isFull() {
+        return count == queue.length;
+    }
+
+    public boolean isEmpty() {
+        return count == 0;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println("Count: " + count);
+        return Arrays.toString(queue);
+    }
+
+}
+```
+
+# Hash Table
