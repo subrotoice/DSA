@@ -1300,7 +1300,7 @@ public class PriorityQueue {
 - Refactoring some code. Select code -> Right click -> Move to Method
 
 ```java
-//Main.java (Mosh And MySolution)
+//Main.java (Mosh + MySolution)
 public class Main {
     public static void main(String[] args) {
         PriorityQueue priorityQueue = new PriorityQueue(5);
@@ -1388,4 +1388,697 @@ public class PriorityQueue {
 }
 ```
 
-# Hash Table
+# Hash Table (Maps, Sets are implemented by HashTable)
+
+**HashTable (key:value) pair, where Key management is the challenge. Value is not an issue**
+
+- Very fast look up
+  Different language it know as different names
+- Java - HashMap
+- Javascript - Object
+- Python - Dictonary
+- C# - Dictonary
+
+## Java HashTable / HashMap
+
+```java
+import java.util.HashMap;
+import java.util.Map;
+
+public class Main {
+    public static void main(String[] args) {
+        Map<Integer, String> map = new HashMap<>();
+        map.put(1, "Subroto");
+        map.put(2, "Goutom");
+        map.put(3, "Jonny");
+
+        var name = map.get(2);
+        System.out.println(name);
+
+        for(var item: map.keySet())
+            System.out.println(map.get(item));
+
+        for(var item: map.entrySet())
+            System.out.println(item.getValue());
+    }
+}
+```
+
+## Exercise: First Non-repeated Character
+
+- main and implementing method are on same Class
+
+```java
+// Main.java, My Solution:- "a reen apple"
+import java.util.HashMap;
+import java.util.Map;
+
+public class Main {
+    public static void main(String[] args) {
+        String str = "a green apple";
+        System.out.println(firstNonRepeatedCharacter(str));
+    }
+
+    public static char firstNonRepeatedCharacter(String input) {
+        Map<Character, Integer> map = new HashMap<>();
+
+        var chars = input.toCharArray();
+        for(char ch:chars){
+/*             var charCount = map.get(ch);
+            if (charCount == null)
+                count = 1;
+            else count++; */
+
+            var charCount = map.containsKey(ch) ? map.get(ch) : 0;
+
+            map.put(ch, ++ charCount);
+        }
+
+        for(char ch:chars) {
+            if (map.get(ch) == 1)
+                return ch;
+        }
+
+        return '0';
+    }
+}
+```
+
+**NB: Mosh solution is near to me**
+
+## Sets
+
+- Maps: key -> value
+- Sets: key (Don't allow duplicate)
+
+## Java Sets
+
+```java
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class Main {
+    public static void main(String[] args) {
+        Set<Integer> set = new HashSet<>();
+        int[] numbers = {1, 2, 3, 3, 4, 5, 5, 6};
+
+        for(int number: numbers)
+            set.add(number);
+
+        System.out.println(set);
+
+        // Some other methods
+        System.out.println(set.contains(6));
+        set.remove(3);
+        set.clear();
+
+        System.out.println(set);
+    }
+}
+```
+
+## Exercise: First Repetaed Character
+
+- Here use map, Because we don't need to keep frequency, just need to watch is it present or not.
+
+```java
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class Main {
+    public static void main(String[] args) {
+        CharFinder charFinder = new CharFinder("a green apple");
+
+        var firstRepetedChar = charFinder.findFirstRepetedCharacter();
+        System.out.println(firstRepetedChar);
+    }
+}
+
+// CharFinder.java
+import java.util.HashSet;
+import java.util.Set;
+
+public class CharFinder {
+    private String input;
+
+    public CharFinder(String str) {
+        input = str;
+    }
+
+    public char findFirstRepetedCharacter() {
+        Set<Character> set = new HashSet<>();
+        for(char ch : input.toCharArray()) {
+            if (set.contains(ch))
+                return ch;
+        set.add(ch);
+        }
+
+        // return '0';
+        return Character.MIN_VALUE; // If nothing find (Mosh)
+    }
+
+}
+```
+
+## Hash Function
+
+A hash function is a function that accepts a group of characters (key) and maps that key to a value of a certain length (called a hash value or hash). The process is called hashing. <br >
+It is done for indexing and locating items in databases. It provides an easy way to find longer value associated with the shorter hash value. It is widely used in encryption. It is also known as a hashing algorithm or message digest function.
+
+- Basic form
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println(hash(3543)); // output: 43
+        System.out.println(hash("A-3543")); // output: 17
+    }
+
+    // Very basic hash function which fit to an array[100]
+    public static int hash(int number) {
+        return number % 100;
+    }
+
+    // Bit advance hash function, combine ascii value
+    public static int hash(String key) {
+        int hash = 0;
+        for(char ch: key.toCharArray())
+            hash += ch; // auto converted to int
+
+        return hash % 100;
+    }
+}
+```
+
+Here output: 43 and 17 is hash value. In criptography it is index value. In DSA / HashTable it is index value or hash value.
+
+## Java hashCode
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        String str = "orange";
+        var output = str.hashCode()
+        System.out.println(output); // output: -1008851410
+    }
+
+}
+```
+
+## Collisions: when two distinct pieces of data in a hash table share the same hash value.
+
+![https://prnt.sc/Q6WionD4xbmh](https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Hash_table_4_1_1_0_0_1_0_LL.svg/640px-Hash_table_4_1_1_0_0_1_0_LL.svg.png)
+Two ways to handel collision
+
+1. Chaining: Each cell in an array point to link list. Do not store value itself store linklist
+2. Open Addressing: There are some open addressing algorithm.
+
+### Chaining
+
+![https://prnt.sc/sJOAr6t5PwuL](https://scaler.com/topics/images/separate-chaining-hash-table)
+
+### Open Addressing
+
+When a collision occurs in HashTable, open addressing finds the next available slot within the table itself using a probing sequence.
+
+#### Linear Probing(Searching): hash(key) + i // i = 1, 2, 3, 4, 5
+
+- It is possible i may get larger boundary of an array, so always reduce it by mod size of the array
+  New Index = (hash(key) + i) % table_size
+
+#### Quadratic Probing: hash(key) + i\*i // i = 1, 4, 9, 16, 25
+
+New Index = (hash(key) + i\*i) % table_size
+
+#### Double Hashing: hash(key) + i\*i // 1, 4, 9, 16, 25
+
+![https://prnt.sc/gVgM613qu9D3](https://i.postimg.cc/wTmLQqDZ/Double-Hashing2.png)
+![https://prnt.sc/jDn9kNMhP43z](https://i.postimg.cc/SsQtnjgR/Double-Hashing.png)
+
+```java
+hash1(key) = key % table_size
+hash2(key) = prime - (key % prime)
+index = (hash1 + i*hash2) % size
+```
+
+NB: Prime number should be smaller then the table size, mod by size to reduce size and fit into an array. <br >
+Example
+
+```java
+K = 11, V = C // Key, Value
+
+hash1(11) = 11 % 5 = 1 // Array size: 5 [index: 0, 1, 2, 3, 4]
+hash2(11) = 3 - (11 % 3) = 1 // Prime number less then 4
+index = (1 + 1*1) % 5 = 2 // When slot: 2 is full then increase i: 2, 3, 4 to find empty location
+```
+
+## Exercise: Building a Hash Table
+
+```java
+// Main.java
+import java.util.Arrays;
+import java.util.LinkedList;
+
+public class Main {
+    public static void main(String[] args) {
+        // HashTable
+        // put(k, v)
+        // get(k): v
+        // remove(k)
+        // k: int
+        // v: string
+        // Collisions: chaining
+        // LinkedList[]
+        // [LL, LL, LL, LL]
+
+        // HashTable hashTable = new HashTable();
+        // hashTable.put("Goutom");
+        HashTable table = new HashTable();
+        table.put(1, "Goutom");
+        table.put(2, "Subroto 22");
+        table.put(3, "Monozit");
+        table.put(4, "Sujit");
+        table.put(5, "Sonjoy");
+        table.put(6, "Kanon");
+
+
+        // System.out.println(table.get(11));
+        // table.remove(6);
+        System.out.println(table.get(6));
+        // System.out.println(table.get(8));
+    }
+}
+```
+
+- Very tricky here: LinkedList[] it is LinkedList array. like int array: int[], char[]
+- This array contain Entry class instance / object. Entities is array name and size is 5.
+- Later on we will create instance of this class for each eteration.
+- Passing key to find the bucket mean index in array that contains Linkedlist.
+
+```java
+import java.util.LinkedList;
+
+public class HashTable {
+    private class Entry{
+        private int key;
+        private String value;
+
+        public Entry(int key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    // Very tricky here: LinkedList[] it is LinkedList array linke int array: int[], char[]
+    // this array contain Entry object. entities is array name and size is 5.
+    // Later on we will create instance of this class
+    private LinkedList<Entry>[] entries = new LinkedList[5];
+
+    public void put(int key, String value) {
+        var index = hash(key);
+
+        if(entries[index] == null)
+            entries[index] = new LinkedList<>();
+
+        var bucket = entries[index];
+
+        for(var entry: bucket) {
+            if (entry.key == key) {
+                entry.value = value;
+                return;
+            }
+        }
+
+        // Entry entry = new Entry(key, value);
+        bucket.addLast(new Entry(key, value));
+    }
+
+    public String get(int key) {
+        var index = hash(key);
+        var bucket = entries[index];
+        if (bucket != null)
+            for(var entry : bucket)
+                if (entry.key == key)
+                    return entry.value;
+
+        return null;
+    }
+
+    public void remove(int key) {
+        var index = hash(key);
+        var bucket = entries[index];
+
+        if (bucket == null)
+            throw new IllegalStateException();
+
+        for(var entry : bucket)
+            if (entry.key == key) {
+                bucket.remove(entry);
+                return;
+            }
+
+        throw new IllegalStateException();
+    }
+
+    private int hash(int key) {
+        return key % entries.length;
+    }
+
+}
+```
+
+## Refactoring
+
+- Best refactoring ever.
+
+```java
+import java.util.LinkedList;
+
+public class HashTable {
+    private class Entry{
+        private int key;
+        private String value;
+
+        public Entry(int key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+    // Very tricky here: LinkedList[] it is LinkedList array linke int array: int[], char[]
+    // this array contain Entry object. entities is array name and size is 5.
+    // Later on we will create instance of this class
+    private LinkedList<Entry>[] entries = new LinkedList[5];
+
+    public void put(int key, String value) {
+        var entry = getEntry(key);
+        if (entry != null) {
+            entry.value = value;
+            return;
+        }
+
+        // var bucket = getOrCreateBucket(key);
+        // // Entry entry = new Entry(key, value);
+        // bucket.addLast(new Entry(key, value));
+        getOrCreateBucket(key).addLast(new Entry(key, value));
+    }
+
+    public String get(int key) {
+        var entry = getEntry(key);
+        // if (entry == null)
+        //     return null;
+
+        // return entry.value;
+
+        return (entry == null) ? null : entry.value;
+    }
+
+    public void remove(int key) {
+        var entry = getEntry(key);
+        if (entry == null)
+            throw new IllegalStateException();
+
+        // var bucket = getBucket(key);
+        // bucket.remove();
+        getBucket(key).remove();
+    }
+
+    private LinkedList<Entry> getBucket(int key) {
+        // var index = hash(key);
+        // return entries[index];
+        return entries[hash(key)]; // More efficient
+    }
+
+    public LinkedList<Entry> getOrCreateBucket(int key) {
+        var index = hash(key);
+        var bucket = entries[index];
+        if (bucket == null) {
+            entries[index] = new LinkedList<>();
+            return entries[index];
+        }
+
+        return bucket;
+    }
+
+    private Entry getEntry(int key) {
+        // var index = hash(key);
+        // var bucket = entries[index];
+        var bucket = getBucket(key);
+
+        if (bucket != null) {
+            for(var entry: bucket)
+                if (entry.key == key)
+                    return entry;
+        }
+
+        return null;
+    }
+
+    private int hash(int key) {
+        return key % entries.length;
+    }
+
+}
+```
+
+# Algorithms
+
+1. Searching
+2. Sorthing
+3. String Manipulation
+
+## Sorting
+
+1. Bubble Sort
+2. Selection Sort
+3. Insertion Sort
+4. Merge Sort
+5. Quick Sort
+6. Counting Sort
+7. Bucket Sort
+
+### Bubble Sort
+
+```java
+// BubbleSort.java
+public class BubbleSort {
+    // [0, 1, 2, 3, 4]
+    // [8, 4, 5, 9, 2]
+    public void sort(int[] input) {
+        int length = input.length;
+        boolean isShorted;
+
+        for(var i = 0; i < length; i++) {
+            isShorted = true;
+            for(var j = 0; j < length - i - 1; j++)
+                if (input[j] > input[j + 1]) {
+                    isShorted = false;
+                    swap(input, j);
+                }
+                if (isShorted)
+                    return;
+
+        }
+
+    }
+
+    private void swap(int[] input, int j) {
+        var temp = input[j];
+        input[j] = input[j + 1];
+        input[j + 1] = temp;
+    }
+}
+
+// Main.java - Call
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] myArray = {8, 4, 5, 9, 2, 7};
+        // BubbleSort bubbleSort = new BubbleSort();
+        var sorter = new BubbleSort();
+        System.out.println(Arrays.toString(myArray));
+        sorter.sort(myArray);
+        System.out.println(Arrays.toString(myArray));
+
+    }
+
+}
+
+```
+
+### Selection Sort
+
+![https://prnt.sc/NF6khQy3cYis](https://www.boardinfinity.com/blog/content/images/2023/03/Selection-sort.png)
+
+1. **Divide the list into two parts**: the sorted part at the left end and the unsorted part at the right end. Initially, the sorted part is empty and the unsorted part is the entire list.
+2. **Find the minimum element** in the unsorted part of the list.
+3. **Swap** the minimum element with the first element of the unsorted part, moving it to the end of the sorted part.
+4. **Repeat** the process for the remaining unsorted part of the list.
+
+The steps continue until the entire list is sorted.
+
+```java
+// Selection Sort
+public class SelectionSort {
+/*  [0, 1, 2, 3, 4]
+    [8, 2, 4, 1, 3] */
+    public void sort (int[] input) {
+        int lenght = input.length;
+        for(int i = 0; i < lenght; i++) {
+            var minIndex = getMinIndex(input, lenght, i);
+
+            swap(input, i, minIndex);
+
+        }
+    }
+
+    private int getMinIndex(int[] input, int lenght, int i) {
+        var minIndex = i;
+        for(int j = i; j < lenght; j++)
+            if (input[minIndex] > input[j])
+                minIndex = j;
+        return minIndex;
+    }
+
+    private void swap(int[] input, int i, int minIndex) {
+        if(i == minIndex) return;
+
+        var temp = input[minIndex];
+        input[minIndex] = input[i];
+        input[i] = temp;
+    }
+
+}
+
+// Main.java
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] myArray = {8, 4, 5, 9, 2, 7};
+        // BubbleSort bubbleSort = new BubbleSort();
+        var sorter = new SelectionSort();
+        System.out.println(Arrays.toString(myArray));
+        sorter.sort(myArray);
+        System.out.println(Arrays.toString(myArray));
+    }
+}
+```
+
+### Insertion Sort
+
+It works similarly to how you might sort playing cards in your hands.
+
+### How it Works
+
+1. **Start with the second element** (since a single element is trivially sorted).
+2. **Compare the current element** with the elements in the sorted part of the array.
+3. **Shift elements** of the sorted part to the right to make space for the current element.
+4. **Insert the current element** into the correct position.
+5. **Repeat** until the whole array is sorted.
+
+### Example
+
+Consider sorting the array `[12, 11, 13, 5, 6]`:
+
+1. **Initial array**: `[12, 11, 13, 5, 6]`
+2. **First pass**: Take the second element `11`. Compare it with `12` and place `11` before `12`: `[11, 12, 13, 5, 6]`.
+3. **Second pass**: Take `13`. It is already in the correct position: `[11, 12, 13, 5, 6]`.
+4. **Third pass**: Take `5`. Place it before `11`: `[5, 11, 12, 13, 6]`.
+5. **Fourth pass**: Take `6`. Place it before `11`: `[5, 6, 11, 12, 13]`.
+
+Insertion sort is efficient for small data sets and mostly sorted arrays. It is less efficient on large lists compared to more advanced algorithms like quicksort, mergesort, or heapsort.
+
+```java
+public class InsertionSort {
+    /*  [0, 1, 2, 3, 4]
+        [8, 2, 4, 1, 3] */
+    public void sort(int[] input) {
+        var length = input.length;
+        for(var i = 1; i < length; i++) {
+            var current = input[i];
+            int j = i;
+            while (j > 0 && input[j - 1] > current) {
+                input[j] = input[j - 1];
+                j--;
+            }
+            input[j] = current;
+        }
+    }
+}
+```
+
+### Marge Sort
+
+Merge sort is a comparison-based, divide-and-conquer sorting algorithm. It divides the input array into smaller sub-arrays, sorts those sub-arrays, and then merges them back together to produce a sorted array. Here's a detailed explanation:
+
+### How it Works
+
+1. **Divide**: Split the array into two halves.
+2. **Conquer**: Recursively sort each half.
+3. **Combine**: Merge the two sorted halves into a single sorted array.
+
+```java
+public class MargeSort {
+    public void sort(int[] array) {
+        int length = array.length;
+        if (length < 2) return;
+
+        int middle = length / 2;
+
+        int[] left = new int[middle];
+        for(var i = 0; i < middle; i++)
+            left[i] = array[i];
+
+        int[] right = new int[length - middle];
+        for(var i = 0; i < right.length; i++ )
+            right[i] = array[middle + i];
+
+        sort(left);
+        sort(right);
+
+        marge(left, right, array); // passing "array" most tircky part
+    }
+
+    private void marge(int[] left, int[] right, int[] result) {
+        int i = 0, j = 0, k = 0;
+        while (i < left.length && j < left.length) {
+            if(left[i] < right[j])
+                result[k++] = left[i++];
+            else
+                result[k++] = right[j++];
+        }
+
+        while (i < left.length)
+            result[k++] = left[i++];
+
+        while (j < left.length)
+            result[k++] = left[j++];
+    }
+}
+```
+
+### Quick Sort (pivot)
+
+- Build most language and frameworks
+- It does not required any additional space. Sort in-place
+- In term of reordering we do not have worring about items in the right partition.
+
+```java
+
+```
+
+### Sort
+
+```java
+
+```
+
+### Sort
+
+```java
+
+```
