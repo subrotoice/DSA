@@ -249,6 +249,8 @@ A linked list consists of a data element known as a node. And each node consists
 - Advantages (Dynamic Size, Ease of Insertion/Deletion )
 - Disadvantages of Linked Lists ( Memory Usage: They use more memory than arrays because of the additional storage required for pointers, Access Time: Accessing an element takes O(n) time, as it requires traversing the list from the head to the desired node)
 
+_Remember: Here one node just keep track of next node. If you change next of next node then the chain of the head will also change_
+
 #### Basic LinkedLists in Java
 
 ```java
@@ -2011,7 +2013,7 @@ public class InsertionSort {
 }
 ```
 
-### Marge Sort
+## Marge Sort
 
 Merge sort is a comparison-based, divide-and-conquer sorting algorithm. It divides the input array into smaller sub-arrays, sorts those sub-arrays, and then merges them back together to produce a sorted array. Here's a detailed explanation:
 
@@ -2061,24 +2063,170 @@ public class MargeSort {
 }
 ```
 
-### Quick Sort (pivot)
+## Quick Sort (pivot)
 
 - Build most language and frameworks
 - It does not required any additional space. Sort in-place
 - In term of reordering we do not have worring about items in the right partition.
 
 ```java
+import java.util.Arrays;
 
+public class QuickSort {
+    public void sort(int[] array) {
+        sort(array, 0, array.length - 1);
+    }
+    public void sort(int[] array, int start, int end) {
+        if(start >= end) return;
+
+        var boundary = partition(array, start, end);
+        sort(array, start, boundary - 1); // Left part
+        sort(array, boundary + 1, end); // right part
+
+    }
+
+    private int partition(int[] array, int start, int end) {
+        var pivot = array[end];
+        var boundary = start - 1;
+
+        for(var i = start; i <= end; i++) {
+            if (array[i] <= pivot)
+                swap(array, ++boundary, i);
+        }
+
+        return boundary;
+    }
+
+    private void swap(int[] array, int boundary, int i) {
+        var temp = array[i];
+        array[i] = array[boundary];
+        array[boundary] = temp;
+    }
+
+}
+
+// Main.java
+import java.util.Arrays;
+public class Main {
+    public static void main(String[] args) {
+        int[] myArray = {7, 3, 1, 5, 2};
+        var sorter = new QuickSort();
+        System.out.println(Arrays.toString(myArray));
+        sorter.sort(myArray);
+        System.out.println(Arrays.toString(myArray));
+    }
+}
 ```
 
-### Sort
+## Counting Sort (Very easy)
+
+**When to use**
+
+- Allocating extra space is not an issue
+- Values are positive integers
+- Most of the values in the range are present
 
 ```java
+import java.util.Arrays;
 
+public class CountingSort {
+    public void sort(int[] array) {
+        int max = Arrays.stream(array).max().getAsInt();
+        int[] count = new int[max + 1];
+
+        for(int item: array)
+            count[item]++;
+
+        var counter = 0;
+        for(int i = 0; i < count.length; i++) {
+            for(int j = 0; j < count[i]; j++)
+                array[counter++] = i;
+        }
+    }
+}
 ```
 
-### Sort
+## Bucket Sort
+
+![https://prnt.sc/oIVwa90NZAY8](https://media.geeksforgeeks.org/wp-content/uploads/20230705162234/file.png)
 
 ```java
+// BucketSort.java
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+public class BucketSort {
+    public void sort(int[] array, int numberOfBucket) {
+        List<List<Integer>> buckets = createBuckets(array, numberOfBucket);
+
+        var i = 0;
+        for(var bucket : buckets) {
+            Collections.sort(bucket);
+            for(var item : bucket)
+                array[i++] = item;
+        }
+    }
+
+    private List<List<Integer>> createBuckets(int[] array, int numberOfBucket) {
+        List<List<Integer>> buckets = new ArrayList<>();
+
+        // List contains another List so it make instance of each inner List
+        for(var i = 0; i < numberOfBucket; i++)
+            buckets.add(new ArrayList<>());
+
+        for(int item : array){
+            // Here get return the index of a bucket. Here each bucket is a linked list of integer
+            buckets.get(item / numberOfBucket).add(item);
+        }
+        return buckets;
+    }
+}
+
+// Main.java
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] myArray = {7, 3, 2, 5, 3, 1, 2, 4, 6};
+        var sorter = new BucketSort();
+        System.out.println(Arrays.toString(myArray));
+        sorter.sort(myArray, 3);
+        System.out.println(Arrays.toString(myArray));
+    }
+}
+```
+
+# Searching Alogrithms
+
+1. Linear Search
+2. Binary Search
+3. Ternary Search
+4. Jumap Search
+5. Exponential Search
+
+## Linear Search
+
+```java
+// Search.java
+public class Search {
+    // linear Search
+    public int linearSearch(int[] array, int item) {
+        for(var i = 0; i < array.length; i++)
+            if (array[i] == item)
+                return i;
+
+        return -1;
+    }
+}
 
 ```
+
+## Binary Search
+
+- Divide and Conqure
+- When we lookup multiple item then it is good on sorted array
+  and iterative
+
+### Binary Search: Recursive
