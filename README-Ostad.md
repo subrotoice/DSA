@@ -216,6 +216,35 @@ var mergeTwoLists = function (list1, list2) {
 };
 ```
 
+[206. Reverse Linked List](https://leetcode.com/problems/reverse-linked-list)
+
+```js
+/**
+ * @param {ListNode} head
+ * @return {ListNode}
+ */
+// 1-2-3-4-5
+// p-c-n
+//   p-c-n
+//     p-c-n
+var reverseList = function (head) {
+  if (head == null || head.next == null) return head;
+
+  // let previous = new ListNode(head.val, null);
+  let previous = new ListNode(head.val);
+  let current = head.next;
+
+  while (current != null) {
+    var next = current.next; //p=1, c=2, n=3-4
+    current.next = previous; // c=2-1-2-3-4
+    previous = current;
+    current = next;
+  }
+
+  return previous;
+};
+```
+
 # Stack and Queue
 
 ## Building a Stack
@@ -256,4 +285,293 @@ console.log(stack.peek());
 console.log(stack.pop());
 console.log(stack.pop());
 console.log(stack.pop());
+```
+
+[20. Valid Parentheses](https://leetcode.com/problems/valid-parentheses/)
+
+```js
+// Basic solution
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+// ()[]{}
+var isValid = function (s) {
+  let stack = [];
+  let openingBr = ["(", "{", "["];
+  let closingBr = [")", "}", "]"];
+
+  for (let i = 0; i < s.length; i++) {
+    let c = s[i];
+    if (openingBr.includes(c)) {
+      console.log(s[i]);
+      stack.push(c);
+    } else if (closingBr.includes(c)) {
+      let t = stack.pop(); // )
+      if (
+        (c == ")" && t != "(") ||
+        (c == "}" && t != "{") ||
+        (c == "]" && t != "[")
+      )
+        return false;
+    }
+  }
+  return stack.length == 0;
+};
+```
+
+Optimized: 20. Valid Parentheses
+
+```js
+// Optimized
+var isValid = function (s) {
+  let stack = [];
+  let brakets = {
+    "(": ")",
+    "{": "}",
+    "[": "]",
+  };
+
+  for (let i = 0; i < s.length; i++) {
+    let c = s[i];
+    if (brakets[c] != undefined) stack.push(c);
+    else if (c != brakets[stack.pop()]) return false;
+  }
+
+  return stack.length === 0;
+};
+```
+
+[Redundant Braces](https://www.interviewbit.com/problems/redundant-braces/)
+
+```js
+module.exports = {
+  //param A : string
+  //return an integer
+  braces: function (A) {
+    let stack = [];
+    let isOperatorFound = false;
+    let top;
+
+    for (let i = 0; i < A.length; i++) {
+      let c = A[i];
+      if (c != ")") stack.push(c);
+      else {
+        top = stack.pop();
+        while (top != "(") {
+          if (["+", "-", "*", "/"].includes(top)) {
+            isOperatorFound = true;
+          }
+          top = stack.pop();
+        }
+
+        if (!isOperatorFound) return 1;
+        isOperatorFound = false;
+      }
+    }
+
+    return 0;
+  },
+};
+```
+
+# Problem Solving on Searching
+
+- Binary search most important. Here you just think about in which direction range to move by right = mid -1 and left = mid +1;
+
+[69. Sqrt(x)](https://leetcode.com/problems/sqrtx/description/)
+
+- Here use binary search to find sqrt
+
+```js
+/**
+ * @param {number} x
+ * @return {number}
+ */
+// x = 8
+var mySqrt = function (x) {
+  if (x === 0) return 0;
+
+  let left = 1;
+  let right = x;
+  let mid = Math.floor((left + right) / 2);
+
+  while (left <= right) {
+    if (mid * mid <= x && (mid + 1) * (mid + 1) > x) return mid;
+    else if (mid * mid > x) right = mid - 1;
+    else left = mid + 1;
+    mid = Math.floor((left + right) / 2);
+  }
+
+  return -1;
+};
+```
+
+[34. Find First and Last Position of Element in Sorted Array](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/)
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var searchRange = function (nums, target) {
+  return [binarySearch(nums, target, true), binarySearch(nums, target, false)];
+};
+
+function binarySearch(arr, target, leftMost) {
+  let left = 0;
+  let right = arr.length - 1;
+  let pos = -1;
+  let mid = Math.floor((left + right) / 2);
+
+  while (left <= right) {
+    if (arr[mid] == target) {
+      pos = mid;
+      if (leftMost) right = mid - 1;
+      else left = mid + 1;
+    } else if (arr[mid] > target) right = mid - 1;
+    else left = mid + 1;
+    mid = Math.floor((left + right) / 2);
+  }
+
+  return pos;
+}
+```
+
+# Tree
+
+[33. Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array)
+
+```js
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var search = function (nums, target) {
+  let left = 0;
+  let right = nums.length - 1;
+  let mid = Math.floor((left + right) / 2);
+  console.log(mid);
+  // debugger;
+  while (left <= right) {
+    if (nums[mid] == target) return mid;
+    else if (nums[left] <= nums[mid]) {
+      if (nums[left] <= target && target <= nums[mid]) right = mid - 1;
+      else left = mid + 1;
+    } else {
+      if (nums[mid] <= target && target <= nums[right]) left = mid + 1;
+      else right = mid - 1;
+    }
+
+    mid = Math.floor((left + right) / 2);
+  }
+
+  return -1;
+};
+```
+
+[100. Same Tree](https://leetcode.com/problems/same-tree)
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} p
+ * @param {TreeNode} q
+ * @return {boolean}
+ */
+var isSameTree = function (p, q) {
+  if (!p && !q) return true;
+  if (!p || !q) return false;
+  if (p.val !== q.val) return false;
+  console.log(typeof p);
+
+  return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+};
+```
+
+[110. Balanced Binary Tree](https://leetcode.com/problems/balanced-binary-tree)
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var findDepth = function (root) {
+  if (!root) return 0;
+
+  return 1 + Math.max(findDepth(root.left), findDepth(root.right));
+};
+
+var isBalanced = function (root) {
+  if (!root) return true;
+
+  let diff = Math.abs(findDepth(root.left) - findDepth(root.right));
+  if (diff > 1) return false;
+
+  return isBalanced(root.left) && isBalanced(root.right);
+};
+```
+
+[101. Symmetric Tree](https://leetcode.com/problems/symmetric-tree)
+
+```js
+/**
+ * Definition for a binary tree node.
+ * function TreeNode(val, left, right) {
+ *     this.val = (val===undefined ? 0 : val)
+ *     this.left = (left===undefined ? null : left)
+ *     this.right = (right===undefined ? null : right)
+ * }
+ */
+/**
+ * @param {TreeNode} root
+ * @return {boolean}
+ */
+var isSymmetricSubtree = function (p, q) {
+  if (!p && !q) return true;
+  if (!p || !q) return false;
+  if (p.val !== q.val) return false;
+
+  return isSymmetricSubtree(p.left, q.right) && isSymmetricSubtree(p.right, q.left);
+};
+var isSymmetric = function (root) {
+  if (!root.left && !root.right) return true;
+
+  return isSymmetricSubtree(root.left, root.right);
+};
+```
+
+[. ]()
+
+```js
+
+```
+
+[. ]()
+
+```js
+
+```
+
+[. ]()
+
+```js
+
 ```
