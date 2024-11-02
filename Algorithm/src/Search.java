@@ -91,4 +91,20 @@ public class Search {
 
         return -1;
     }
+
+    // Exponential search
+    // [1, 3, 5, 7, 10, 13, 18, 20, 21]
+    public int exponentialSearch(int[] array, int target) {
+        int length = array.length;
+        int bound = 1;
+
+        while (bound < length && array[bound] < target ) {
+            bound *= 2;
+        }
+        
+        var left = bound / 2;
+        var right = Math.min(bound, length-1);
+
+        return binarySearchRec(array, target, left, right);
+    }
 }

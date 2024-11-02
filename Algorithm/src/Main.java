@@ -8,6 +8,7 @@ public class Main {
         // Binary search using Recurssion
         // System.out.println(search.binarySearchRec(numbers, 3));
         // System.out.println(search.binarySearchItr(numbers, 13));
-        System.out.println(search.jumpSearch(numbers, 21));
+        // System.out.println(search.jumpSearch(numbers, 3));
+        System.out.println(search.exponentialSearch(numbers, 22));
     }
 }

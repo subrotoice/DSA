@@ -2393,3 +2393,39 @@ public class Search {
     }
 }
 ```
+
+## **Exponential Search**
+- Extend search boudary multiplay by 2. like: 1, 2, 4, 8, 16 (it is the range)
+- Target 15, in that case we perform binary search in range of 8 - 16
+- Time Complexity O(log i)
+
+```java
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        int[] numbers = {1, 3, 5, 7, 10, 13, 18, 20, 21};
+        var search = new Search();
+        System.out.println(search.exponentialSearch(numbers, 21));
+    }
+}
+```
+```java
+// Search.java
+public class Search {
+    // Exponential search
+    // [1, 3, 5, 7, 10, 13, 18, 20, 21]
+    public int exponentialSearch(int[] array, int target) {
+        int length = array.length;
+        int bound = 1;
+
+        while (bound < length && array[bound] < target ) {
+            bound *= 2;
+        }
+        
+        var left = bound / 2;
+        var right = Math.min(bound, length-1);
+
+        return binarySearchRec(array, target, left, right);
+    }
+}
+```
