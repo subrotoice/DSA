@@ -63,20 +63,22 @@ Java Array Basic
 ```java
 // Declaration
 type[] arrayName;
-int[] myArray;
-String[] myStringArray;
+
+int[] myArray; // int array {1, 3, 5, 7}
+String[] myStringArray; // String array {"Hello", "World", "Java"}
+char[] wordArray = word.toCharArray(); // String to char array {a, b, d, z}
 
 // Instantiation
 myArray = new int[10]; // array of 10 integers
 myStringArray = new String[5]; // array of 5 strings
 
+// Declaration + Instantiation
 int[] myArray = new int[10];
 String[] myStringArray = new String[5];
 
 // Initialization
 int[] myArray = {1, 2, 3, 4, 5};
 String[] myStringArray = {"Hello", "World", "Java"};
-
 ```
 
 In Java, if you assign one array to another, such as arrayOne = arrayTwo, you are not copying the contents of the array. Instead, you are copying the reference, which means both arrayOne and arrayTwo will refer to the same array in memory.
@@ -2429,3 +2431,204 @@ public class Search {
     }
 }
 ```
+
+# **String Manipulation**
+
+## Count Vowels
+
+```java
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        var countVowels = StringUtils.countVowels(null);
+        System.out.println(countVowels);
+    }
+}
+```
+```java
+// StringUtils.java
+public class StringUtils {
+    public static int countVowels(String str) {
+        if(str == null) return 0;
+        
+        int count = 0;
+        String vowels = "aeiou";
+        for(var ch:str.toLowerCase().toCharArray())
+            if(vowels.indexOf(ch) != -1)
+                count++;
+
+        return count;
+    }
+}
+
+// Reverse String
+public static String reverseString(String str) {
+    var length = str.length();
+    if(length < 2) return str;
+    int count = 0;
+
+    String reversed = "";
+    for(var i = length - 1; i >= 0; i--) // O(n) operation
+        reversed += str.charAt(i);// O(n) operation
+
+    return reversed;
+}
+
+
+// Reverse String useing String Builder
+public static String reverseString(String str) {
+    var length = str.length();
+    if(length < 2) return str;
+    int count = 0;
+
+    StringBuilder reversed = new StringBuilder();
+    for(var i = length - 1; i >= 0; i--) // O(n) operation
+        reversed.append(str.charAt(i)); // O(1) operation
+
+    return reversed.toString();
+}
+
+// Reverse Words in a sentesce | Trees are beautiful -> beautiful are Trees
+public static String reverseWords(String sentence) {
+    if(sentence == null) return "";
+
+    String[] words = sentence.split(" ");
+    StringBuilder reversed = new StringBuilder();
+    for(var i=words.length - 1; i >= 0; i--) {
+        reversed.append(words[i] + " ");
+    }
+
+    return reversed.toString().trim(); // remove white space using trim()
+}
+```
+
+
+## Rest all String Manipulation
+
+```java
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        // var countVowels = StringUtils.countVowels(null);
+        // var reversed= StringUtils.reverseString("Hellow World");
+        // var reversed= StringUtils.reverseWords("Hellow World");
+        // System.out.println(StringUtils.capitalize(""));
+        // System.out.println(StringUtils.areAnagrams("ABCD", "BCDF"));
+        System.out.println(StringUtils.isPalindrome("ABBa"));
+    }
+}
+
+```
+```java
+// StringUtils.java
+import java.util.Arrays;
+
+public class StringUtils {
+    // Count Vowles
+    public static int countVowels(String str) {
+        if(str == null) return 0;
+        
+        int count = 0;
+        String vowels = "aeiou";
+        for(var ch:str.toLowerCase().toCharArray())
+            if(vowels.indexOf(ch) != -1)
+                count++;
+
+        return count;
+    }
+
+    // Reverse String
+    public static String reverseString(String str) {
+        var length = str.length();
+        if(length < 2) return str;
+        int count = 0;
+
+        StringBuilder reversed = new StringBuilder();
+        for(var i = length - 1; i >= 0; i--)
+            reversed.append(str.charAt(i)); // O(1) operation
+
+        return reversed.toString();
+    }
+    
+    // Reverse Words in a sentesce | Trees are beautiful -> beautiful are Trees
+    public static String reverseWords(String sentence) {
+        String[] words = sentence.split(" ");
+        StringBuilder reversed = new StringBuilder();
+        for(var i=words.length - 1; i >= 0; i--) {
+            reversed.append(words[i] + " ");
+        }
+
+        return reversed.toString().trim();
+    }
+    
+    // Capitalized Sentence | Trees are beautiful -> Trees Are Beautiful
+    public static String capitalize(String sentence) {
+        if(sentence == null || sentence.trim().isEmpty()) return "";
+
+        String[] words = sentence.trim().replaceAll(" +", " ").split(" ");
+
+        for(var i = 0; i < words.length; i++) {
+            words[i] = words[i].substring(0, 1).toUpperCase() + words[i].substring(1).toLowerCase();
+        }
+
+        return String.join(" ", words);
+    }
+
+    // Ana Grams | ABCD -> BACD
+    public static boolean areAnagrams(String first, String second) {
+        if(first == null || second == null) return false;
+
+        var array1 = first.toLowerCase().toCharArray();
+        Arrays.sort(array1);
+
+        var array2 = second.toLowerCase().toCharArray();
+        Arrays.sort(array2);
+
+        return Arrays.equals(array1, array2);
+    }
+
+    // Palandrom | ABBA, MADAM | It involves a lot of operation
+    public static boolean isPalindromeWithLibrary(String word) {
+        if(word == null) return true;
+
+        var input = new StringBuilder(word);
+        input.reverse();
+        return input.toString().equals(word);
+    }
+
+    // Palandrom | ABBA, MADAM | It O(n/2)
+    public static boolean isPalindromeWithCharArray(String word) {
+        if(word == null) return true;
+
+        char[] wordArray = word.toCharArray();
+        var left = 0;
+        var right = word.length() - 1;
+
+        while (left < right) {
+            if (wordArray[left] != wordArray[right] )
+                return false;
+            
+            left++; 
+            right--; 
+        }
+
+        return true;
+    }
+
+    // Palandrom | ABBA, MADAM | It O(n/2) | charAt
+    public static boolean isPalindrome(String word) {
+        if(word == null) return false;
+
+        var lowerCaseWord = word.toLowerCase();
+        var left = 0;
+        var right = lowerCaseWord.length() - 1;
+
+        while (left < right) 
+            if (lowerCaseWord.charAt(left++) != lowerCaseWord.charAt(right--))
+                return false;
+    
+        return true;
+    }
+}
+```
+
