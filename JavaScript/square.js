@@ -1,7 +1,7 @@
-// 5️⃣ Replace Every Element with its Square
+function intersection(arr1) {
+  arr1.forEach((element) => {});
 
-function square(arr) {
-  return arr.map((item) => item * item);
+  return arr1;
 }
 
-console.log(square([1, 2, 3, 5, 8]));
+console.log(repeat([4, 5, 6, 7, 5, 9]));
