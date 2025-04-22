@@ -68,6 +68,10 @@ int[] myArray; // int array {1, 3, 5, 7}
 String[] myStringArray; // String array {"Hello", "World", "Java"}
 char[] wordArray = word.toCharArray(); // String to char array {a, b, d, z}
 
+int[] myArray; // int array {1, 3, 5, 7}
+String[] myStringArray; // String array {"Hello", "World", "Java"}
+char[] wordArray = word.toCharArray(); // String to char array {a, b, d, z}
+
 // Instantiation
 myArray = new int[10]; // array of 10 integers
 myStringArray = new String[5]; // array of 5 strings
@@ -512,6 +516,18 @@ Internally we use array or linked lists to store the object in a stack. So stack
 - Build Navigation
 
 ![https://prnt.sc/B40St89n5LaX](https://cdn.pixabay.com/photo/2016/03/31/19/16/book-1294864_1280.png)
+
+```javascript
+let arr = [1, 2, 3, 4, 5];
+
+// Stack: Insert from last, Pop from Last (Stack Of Desh)
+arr.push(7); // Stack/Queue [1, 2, 3, 4, 5, 7]
+arr.pop(); // Stack [1, 2, 3, 4, 5]
+
+// Queue: Insert from Last, Pop from first (People stand in line)
+arr.push(7); //  Stack/Queue: Enqeue
+arr.shift(); // Queue: Dequeue
+```
 
 ## Stacks 4 Operations. All operation O(1)
 
@@ -2223,6 +2239,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2263,6 +2280,7 @@ public class Main {
 }
 
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2294,7 +2312,7 @@ public class Search {
         // System.out.println(middle);
         while (left < right) {
             middle = (left + right) / 2;
-            
+
             if (array[middle] == target)
                 return middle;
 
@@ -2302,7 +2320,7 @@ public class Search {
                 right = middle - 1;
             else
                 left = middle + 1;
-            
+
         }
 
         return -1;
@@ -2315,7 +2333,8 @@ public class Search {
 ## **Ternary Search**
 
 - Calculation of partiionSize is important
-- partitionSize = (right - left) / 3; 
+- partitionSize = (right - left) / 3;
+
 ```java
 // Main.java
 import java.util.Arrays;
@@ -2328,6 +2347,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2337,7 +2357,7 @@ public class Search {
 
     private int ternarySearchRec(int[] array, int target, int left, int right) {
         if(left > right) return -1;
-        
+
         int partitionSize = (right-left) / 3;
         int mid1 = left + partitionSize;
         int mid2 = right - partitionSize;
@@ -2356,6 +2376,7 @@ public class Search {
 ```
 
 ## **Jump Search**
+
 - Find the block
 - Then perform linear search on that block
 
@@ -2369,6 +2390,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2382,13 +2404,13 @@ public class Search {
 
         while (start < length && array[next - 1] < target ) {
             start = next;
-            next += blockSize; 
+            next += blockSize;
 
             if (next > array.length)
                 next = array.length;
         }
 
-        for(int i = start; i < next; i++) 
+        for(int i = start; i < next; i++)
             if (array[i] == target) return i;
 
         return -1;
@@ -2397,6 +2419,7 @@ public class Search {
 ```
 
 ## **Exponential Search**
+
 - Extend search boudary multiplay by 2. like: 1, 2, 4, 8, 16 (it is the range)
 - Target 15, in that case we perform binary search in range of 8 - 16
 - Time Complexity O(log i)
@@ -2411,6 +2434,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2423,7 +2447,7 @@ public class Search {
         while (bound < length && array[bound] < target ) {
             bound *= 2;
         }
-        
+
         var left = bound / 2;
         var right = Math.min(bound, length-1);
 
