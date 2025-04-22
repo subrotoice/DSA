@@ -61,8 +61,7 @@ Understanding these basic linear data structures is crucial for solving many com
 Java Array Basic
 
 ```java
-// Declaration
-type[] arrayName;
+// Declaration: type[] arrayName
 
 int[] myArray; // int array {1, 3, 5, 7}
 String[] myStringArray; // String array {"Hello", "World", "Java"}
@@ -276,7 +275,8 @@ public class Main {
         // LinkedList to regular Array
         var array = list.toArray();
 
-        System.out.println(Arrays.toString(array));
+        System.out.println(Arrays.toString(array));  // [50, 10, 20, 30]
+        System.out.println(list); // [50, 10, 20, 30] It print like array
 
     }
 }
@@ -372,27 +372,17 @@ public class LinkedList {
         size--;
     }
 
-    // removeLast
-    public void removeLast() {
-        // Validation
-        if (isEmpty())
-            throw new NoSuchElementException();
+    public void removeLast() { // 5, 10, 20
+        if (isEmpty()) throw new NoSuchElementException();
 
-        if (first == last)
-            first = last;
-        else {
-            // Find second last node. you can make getPrevious(last) function
-            var current = first;
-            var previous = current;
-
-            while (current.next != null) {
-                previous = current;
-                current = current.next;
-            }
-
-            last = previous;
-            last.next = null;
+        if (first == last) {
+            first = last = null;
+            return;
         }
+
+        var previous = findPrevious(last);
+        last = previous;
+        last.next = null;
 
         size--;
     }
@@ -423,6 +413,20 @@ public class LinkedList {
         return size;
     }
 
+    public Node findPrevious(Node node) { // 5, 10, 20
+        var current = first;
+
+        while (current != null) {
+            if (current.next == node) {
+                return current;
+            }
+
+            current = current.next;
+        }
+
+        return null;
+    }
+
     // Converting Linked Lists to Arrays
     public int[] toArray() {
         int[] array = new int[size];
@@ -442,6 +446,175 @@ public class LinkedList {
     }
 }
 
+```
+## JavaScript Linked List Implementation
+```js
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.first = null;
+    this.last = null;
+    this.size = 0;
+  }
+
+  // addLast
+  addLast(item) {
+    let node = new Node(item);
+
+    if (this.first == null) this.first = this.last = node;
+    else {
+      this.last.next = node; // Call stack er next
+      this.last = node; // last property of this object
+    }
+
+    this.size++;
+  }
+  addFirst(item) {
+    let node = new Node(item);
+
+    if (this.isEmpty()) this.first = this.last = node;
+    else {
+      node.next = this.first;
+      this.first = node;
+    }
+
+    this.size++;
+  }
+
+  removeFirst() {
+    if (this.isEmpty()) throw new Error("NoSuchElementException");
+
+    if (this.first === this.last) this.first = this.last = null;
+    else {
+      let second = this.first.next;
+      this.first.next = null;
+      this.first = second;
+    }
+
+    this.size--;
+  }
+
+  removeLast() {
+    if (this.isEmpty()) throw new Error("NoSuchElementException");
+
+    if (this.first === this.last) {
+      this.first = this.last = null;
+    } else {
+      let previous = this.findPrevious(this.last);
+      this.last = previous;
+      this.last.next = null;
+    }
+
+    this.size--;
+  }
+
+  contains(item) {
+    return this.indexOf(item) !== -1;
+  }
+
+  indexOf(item) {
+    let index = 0;
+    let current = this.first;
+
+    while (current !== null) {
+      if (current.value === item) return index;
+      current = current.next;
+      index++;
+    }
+
+    return -1;
+  }
+
+  findPrevious(node) {
+    let current = this.first;
+
+    while (current !== null) {
+      if (current.next === node) return current;
+      current = current.next;
+    }
+
+    return null;
+  }
+
+  printList() {
+    let listToArr = [];
+    let current = this.first;
+
+    while (current) {
+      listToArr.push(current.value);
+      current = current.next;
+    }
+    console.log(listToArr);
+  }
+
+  isEmpty() {
+    return this.first == null;
+  }
+}
+
+var list = new LinkedList();
+list.addLast(5);
+list.addLast(10);
+list.addLast(20);
+list.addFirst(1);
+list.printList();
+list.removeLast();
+list.removeFirst();
+list.printList();
+```
+## Using ListNode Constructor function and prototype
+```js
+function Node(value) {
+  this.value = value;
+  this.next = null;
+}
+
+function LinkedList() {
+  this.first = null;
+  this.last = null;
+  this.size = 0;
+}
+
+LinkedList.prototype.isEmpty = function () {
+  return this.first === null;
+};
+
+LinkedList.prototype.addLast = function (item) {
+  var node = new Node(item);
+
+  if (this.first === null) this.first = this.last = node;
+  else {
+    this.last.next = node;
+    this.last = node;
+  }
+
+  this.size++;
+};
+
+LinkedList.prototype.printList = function () {
+  var listToArr = [];
+  var current = this.first;
+
+  while (current) {
+    listToArr.push(current.value);
+    current = current.next;
+  }
+
+  console.log(listToArr);
+};
+
+// Usage
+var list = new LinkedList();
+list.addLast(5);
+list.addLast(10);
+list.addLast(20);
+list.printList();
 ```
 
 ## Singly and Doubly Linked list
@@ -477,6 +650,32 @@ public void reverse() {
     last=endItem;
     }
 ```
+## Javascript: Reverse
+With checking all edge cases.
+```js
+reverse() {
+if (this.isEmpty) return;
+
+// 10->20->30->40->50
+let head = this.first;
+let p = head; // 10
+let c = head.next; // 20
+let next = c.next; // 30
+
+while (next != null) {
+    c.next = p;
+    p = c;
+    c = next;
+    next = c.next;
+}
+
+head.next = null;
+this.last = head;
+
+c.next = p;
+this.first = c;
+}
+```
 
 ## Find k th node from the end of a linked list
 
@@ -503,6 +702,28 @@ public int getKthFromTheEnd(int k) {
 
 }
 ```
+## Javascript: Kth node from the end
+```js
+getKthFromTheEnd(k) {
+  if (this.isEmpty()) throw new Error("Illegal state");
+  if (k < 1) throw new Error("Invalid value of k");
+
+  let first = this.first;
+  let second = first;
+
+  for (let i = 0; i < k - 1; i++) {
+    second = second.next;
+    if (second == null) throw new Error("Illegal Argument");
+  }
+
+  while (second != this.last) {
+    second = second.next;
+    first = first.next;
+  }
+
+  return first.value;
+}
+```
 
 # Stacks - Last In First Out (LIFO)
 
@@ -512,6 +733,18 @@ Internally we use array or linked lists to store the object in a stack. So stack
 - Build Navigation
 
 ![https://prnt.sc/B40St89n5LaX](https://cdn.pixabay.com/photo/2016/03/31/19/16/book-1294864_1280.png)
+
+```javascript
+let arr = [1, 2, 3, 4, 5];
+
+// Stack: Insert from last, Pop from Last (Stack Of Desh)
+arr.push(7); // Stack/Queue [1, 2, 3, 4, 5, 7]
+arr.pop(); // Stack [1, 2, 3, 4, 5]
+
+// Queue: Insert from Last, Pop from first (People stand in line)
+arr.push(7); //  Stack/Queue: Enqeue
+arr.shift(); // Queue: Dequeue
+```
 
 ## Stacks 4 Operations. All operation O(1)
 
@@ -538,6 +771,118 @@ public class Main {
         top = stack.peek();
         System.out.println(20);
         System.out.println(stack.isEmpty()); // after two stack.pop()
+    }
+}
+```
+
+## Implementing a Stack
+
+```java
+// Main.java
+public class Main {
+    public static void main(String[] args) {
+        Stack stack = new Stack();
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+        stack.print();
+        var top  = stack.pop();
+        stack.pop();
+        stack.pop();
+        // var top  = stack.peek();
+        System.out.println(top);
+        stack.print();
+        System.out.println(stack.isEmpty());
+    }
+}
+```
+
+```java
+// My Solution | /Stack/Stack.java
+import java.util.Arrays;
+
+public class Stack {
+    private int[] stack = new int[5];
+    private int count = 0;
+
+    public void push(int input) {
+        stack[count++] = input;
+    }
+
+    public int pop() {
+        return stack[--count];
+    }
+
+    public int peek() {
+        return stack[count - 1];
+    }
+
+    public boolean isEmpty() {
+        return count <= 0;
+    }
+
+    public void print() {
+        for(var i = 0; i < count; i++)
+        System.out.println(stack[i]);
+    }
+
+}
+```
+
+```java
+// Mosh Solution
+public class Main {
+    public static void main(String[] args) {
+        Stack stack = new Stack();
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+        System.out.println(stack.toString());
+        var top  = stack.pop();
+        stack.pop();
+        stack.pop();
+        // var top  = stack.peek();
+        System.out.println(top);
+        System.out.println(stack.isEmpty());
+    }
+}
+
+// Stack.java
+import java.util.Arrays;
+
+public class Stack {
+    private int[] stack = new int[5];
+    private int count = 0;
+
+    public void push(int input) {
+        if (count == stack.length)
+            throw new StackOverflowError();
+
+        stack[count++] = input;
+    }
+
+    public int pop() {
+        if (count <= 0)
+            throw new IllegalStateException();
+
+        return stack[--count];
+    }
+
+    public int peek() {
+        if (count <= 0)
+            throw new IllegalStateException();
+
+        return stack[count - 1];
+    }
+
+    public boolean isEmpty() {
+        return count <= 0;
+    }
+
+    @Override
+    public String toString(){
+        var content = Arrays.copyOfRange(stack, 0, count);
+        return Arrays.toString(content);
     }
 }
 ```
@@ -601,9 +946,32 @@ public class StringReverser {
             reversed.append(stack.pop());
 
         return reversed.toString();
-
     }
 
+}
+```
+## JavaScript Stack using array push/pop method
+```js
+let stack = [];
+stack.push(10);
+stack.push(20);
+stack.push(30);
+stack.push(40);
+console.log(stack); // [ 10, 20, 30, 40 ]
+console.log(stack.pop()); // 40
+console.log(stack); // [ 10, 20, 30 ]
+```
+## JavaScript Stack: Reverse string
+```js
+let str = "abcde";
+let revStr = [];
+
+for (let i = 0; i < str.length; i++) {
+  revStr.push(str.charAt(i));
+}
+
+while (revStr.length != 0) {
+  console.log(revStr.pop());
 }
 ```
 
@@ -783,118 +1151,6 @@ public class BalanceExpression {
 }
 ```
 
-## Implementing a Stack
-
-```java
-// Main.java
-public class Main {
-    public static void main(String[] args) {
-        Stack stack = new Stack();
-        stack.push(10);
-        stack.push(20);
-        stack.push(30);
-        stack.print();
-        var top  = stack.pop();
-        stack.pop();
-        stack.pop();
-        // var top  = stack.peek();
-        System.out.println(top);
-        stack.print();
-        System.out.println(stack.isEmpty());
-    }
-}
-```
-
-```java
-// My Solution | /Stack/Stack.java
-import java.util.Arrays;
-
-public class Stack {
-    private int[] stack = new int[5];
-    private int count = 0;
-
-    public void push(int input) {
-        stack[count++] = input;
-    }
-
-    public int pop() {
-        return stack[--count];
-    }
-
-    public int peek() {
-        return stack[count - 1];
-    }
-
-    public boolean isEmpty() {
-        return count <= 0;
-    }
-
-    public void print() {
-        for(var i = 0; i < count; i++)
-        System.out.println(stack[i]);
-    }
-
-}
-```
-
-```java
-// Mosh Solution
-public class Main {
-    public static void main(String[] args) {
-        Stack stack = new Stack();
-        stack.push(10);
-        stack.push(20);
-        stack.push(30);
-        System.out.println(stack.toString());
-        var top  = stack.pop();
-        stack.pop();
-        stack.pop();
-        // var top  = stack.peek();
-        System.out.println(top);
-        System.out.println(stack.isEmpty());
-    }
-}
-
-// Stack.java
-import java.util.Arrays;
-
-public class Stack {
-    private int[] stack = new int[5];
-    private int count = 0;
-
-    public void push(int input) {
-        if (count == stack.length)
-            throw new StackOverflowError();
-
-        stack[count++] = input;
-    }
-
-    public int pop() {
-        if (count <= 0)
-            throw new IllegalStateException();
-
-        return stack[--count];
-    }
-
-    public int peek() {
-        if (count <= 0)
-            throw new IllegalStateException();
-
-        return stack[count - 1];
-    }
-
-    public boolean isEmpty() {
-        return count <= 0;
-    }
-
-    @Override
-    public String toString(){
-        var content = Arrays.copyOfRange(stack, 0, count);
-        return Arrays.toString(content);
-    }
-}
-```
-
 # Queues
 
 ![https://prnt.sc/dXcCM65gJWCG](https://media.geeksforgeeks.org/wp-content/uploads/20220816162225/Queue.png)
@@ -932,6 +1188,17 @@ public class Main {
     }
 }
 ```
+## JavaScript Queue: push/shift
+```js
+let queue = [];
+queue.push(10);
+queue.push(20);
+queue.push(30);
+queue.push(40);
+console.log(queue); // [ 10, 20, 30, 40 ]
+console.log(queue.shift()); // 10
+console.log(queue); // [ 20, 30, 40 ]
+```
 
 ## Exercise: Reversiong a Queue (Queue: [10, 20, 30] keep it in Stack [10, 20, 30] and then keep it back to Queue [30, 20, 10])
 
@@ -962,6 +1229,27 @@ public class Main {
             queue.add(stack.pop());
     }
 }
+```
+
+## JavaScript: Reverse Queue
+```js
+let queue = [];
+let stack = [];
+queue.push(10);
+queue.push(20);
+queue.push(30);
+queue.push(40);
+console.log(queue); // [ 10, 20, 30, 40 ]
+
+while (queue.length !== 0) {
+  stack.push(queue.shift());
+}
+
+while (stack.length !== 0) {
+  queue.push(stack.pop());
+}
+
+console.log(queue); // [ 40, 30, 20, 10 ]
 ```
 
 ## Exercise: Building a Queue Using an Array
@@ -1168,7 +1456,6 @@ public class Main {
 
         var frontPeek = queueWIthTwoStacks.peek();
         System.out.println(frontPeek);
-
     }
 
 }
@@ -1188,7 +1475,6 @@ public class QueueWIthTwoStacks {
         moveStack1ToStack2();
 
         return stack2.pop();
-
     }
 
     public int peek() {
@@ -2223,6 +2509,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2263,6 +2550,7 @@ public class Main {
 }
 
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2294,7 +2582,7 @@ public class Search {
         // System.out.println(middle);
         while (left < right) {
             middle = (left + right) / 2;
-            
+
             if (array[middle] == target)
                 return middle;
 
@@ -2302,7 +2590,7 @@ public class Search {
                 right = middle - 1;
             else
                 left = middle + 1;
-            
+
         }
 
         return -1;
@@ -2315,7 +2603,8 @@ public class Search {
 ## **Ternary Search**
 
 - Calculation of partiionSize is important
-- partitionSize = (right - left) / 3; 
+- partitionSize = (right - left) / 3;
+
 ```java
 // Main.java
 import java.util.Arrays;
@@ -2328,6 +2617,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2337,7 +2627,7 @@ public class Search {
 
     private int ternarySearchRec(int[] array, int target, int left, int right) {
         if(left > right) return -1;
-        
+
         int partitionSize = (right-left) / 3;
         int mid1 = left + partitionSize;
         int mid2 = right - partitionSize;
@@ -2356,6 +2646,7 @@ public class Search {
 ```
 
 ## **Jump Search**
+
 - Find the block
 - Then perform linear search on that block
 
@@ -2369,6 +2660,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2382,13 +2674,13 @@ public class Search {
 
         while (start < length && array[next - 1] < target ) {
             start = next;
-            next += blockSize; 
+            next += blockSize;
 
             if (next > array.length)
                 next = array.length;
         }
 
-        for(int i = start; i < next; i++) 
+        for(int i = start; i < next; i++)
             if (array[i] == target) return i;
 
         return -1;
@@ -2397,6 +2689,7 @@ public class Search {
 ```
 
 ## **Exponential Search**
+
 - Extend search boudary multiplay by 2. like: 1, 2, 4, 8, 16 (it is the range)
 - Target 15, in that case we perform binary search in range of 8 - 16
 - Time Complexity O(log i)
@@ -2411,6 +2704,7 @@ public class Main {
     }
 }
 ```
+
 ```java
 // Search.java
 public class Search {
@@ -2423,7 +2717,7 @@ public class Search {
         while (bound < length && array[bound] < target ) {
             bound *= 2;
         }
-        
+
         var left = bound / 2;
         var right = Math.min(bound, length-1);
 
