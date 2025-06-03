@@ -1,159 +1,77 @@
-class Node {
-  constructor(value) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-class LinkedList {
-  constructor() {
-    this.first = null;
-    this.last = null;
-    this.size = 0;
+class HashTable {
+  constructor(size) {
+    this.entries = new Array(size); // size of the table
   }
 
-  // addLast
-  addLast(item) {
-    let node = new Node(item);
+  set(key, value) {
+    let index = this._hash(key);
 
-    if (this.first == null) this.first = this.last = node;
-    else {
-      this.last.next = node; // Call stack er next
-      this.last = node; // last property of this object
+    if (!this.entries[index]) {
+      this.entries[index] = new LinkedList();
     }
 
-    this.size++;
-  }
-  addFirst(item) {
-    let node = new Node(item);
+    let bucket = this.entries[index];
 
-    if (this.isEmpty()) this.first = this.last = node;
-    else {
-      node.next = this.first;
-      this.first = node;
+    let entry = this.getEntry(key);
+    if (entry !== null) {
+      entry.value = value;
+      return;
     }
 
-    this.size++;
+    entry = { key, value };
+    bucket.addLast(entry);
   }
 
-  removeFirst() {
-    if (this.isEmpty()) throw new Error("NoSuchElementException");
+  get(key) {
+    let entry = this.getEntry(key);
 
-    if (this.first === this.last) this.first = this.last = null;
-    else {
-      let second = this.first.next;
-      this.first.next = null;
-      this.first = second;
-    }
-
-    this.size--;
+    return entry === null ? entry : entry.value;
   }
 
-  removeLast() {
-    if (this.isEmpty()) throw new Error("NoSuchElementException");
+  remove(key) {
+    let entry = this.getEntry(key);
+    if (entry == null) throw new Error("IllegalStateException");
 
-    if (this.first === this.last) {
-      this.first = this.last = null;
-    } else {
-      let previous = this.findPrevious(this.last);
-      this.last = previous;
-      this.last.next = null;
-    }
-
-    this.size--;
+    this.getBucket(key).remove(entry);
   }
 
-  contains(item) {
-    return this.indexOf(item) !== -1;
+  getBucket(key) {
+    return this.entries[this._hash(key)];
   }
 
-  indexOf(item) {
-    let index = 0;
-    let current = this.first;
+  getEntry(key) {
+    let bucket = this.getBucket(key);
 
-    while (current !== null) {
-      if (current.value === item) return index;
-      current = current.next;
-      index++;
-    }
-
-    return -1;
-  }
-
-  findPrevious(node) {
-    let current = this.first;
-
-    while (current !== null) {
-      if (current.next === node) return current;
-      current = current.next;
+    if (bucket !== null) {
+      for (let entry of bucket) {
+        if (entry.key === key) {
+          return entry;
+        }
+      }
     }
 
     return null;
   }
 
-  printList() {
-    let listToArr = [];
-    let current = this.first;
-
-    while (current) {
-      listToArr.push(current.value);
-      current = current.next;
-    }
-    console.log(listToArr);
-  }
-
-  isEmpty() {
-    return this.first == null;
+  _hash(key) {
+    // private method
+    return key % this.entries.length;
   }
 }
 
-// var list = new LinkedList();
-// list.addLast(5);
-// list.addLast(10);
-// list.addLast(20);
-// list.addFirst(1);
+let hashTable = new HashTable(5);
+hashTable.set(3, "OK-3");
+hashTable.set(4, "OK-4");
+hashTable.set(9, "OK-9");
+hashTable.set(13, "OK-13");
 
-// var list2 = new LinkedList();
-// list2.addLast(4);
-// list2.addLast(54);
-// list2.addFirst(17);
-
-// let arr = new Array();
-// arr[0] = list;
-// arr[1] = list2;
-
-// console.log(arr);
-
-class HashTable {
-  entries = new Array();
-
-  set(key, value) {
-    let index = this.hash(key);
-
-    if (!entries[index]) {
-      this.entries[index] = new LinkedList();
-    }
-
-    let bucket = this.entries[index];
-    for (let entry in bucket) {
-      if (entry.key == key) {
-        entry.value = value;
-        return;
-      }
-    }
-
-    let entry = { key: value };
-    bucket.addLast(entry);
-  }
-
-  hash(key) {
-    return key % 5;
-  }
-}
-
-let hashTable = new HashTable();
-hashTable.set(3, "OK");
-hashTable.set(4, "OKe");
-hashTable.set(9, "OKd");
-
-console.log(hashTable);
+console.log(hashTable.get(9));
+console.log(hashTable.get(3));
+console.log(hashTable.get(4));
+console.log(hashTable.get(13));
+hashTable.remove(9);
+hashTable.remove(4);
+// hashTable.remove(44);
+console.log(hashTable.get(9));
+console.log(hashTable.get(4));
+console.log(hashTable.get(13));

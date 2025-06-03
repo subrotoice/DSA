@@ -2039,6 +2039,173 @@ public class HashTable {
 
 }
 ```
+## HashTable Implementation (JavaScript)
+```js
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.first = null;
+    this.last = null;
+    this.size = 0;
+  }
+
+  addLast(item) {
+    let node = new Node(item);
+
+    if (this.first == null) this.first = this.last = node;
+    else {
+      this.last.next = node; // Call stack er next
+      this.last = node; // last property of this object
+    }
+
+    this.size++;
+  }
+
+  remove(item) {
+    if (this.isEmpty()) return;
+
+    if (this.size === 1) {
+      this.first = this.last = null;
+      this.size = 0;
+      return;
+    }
+
+    if (this.first.value === item) {
+      this.first = this.first.next;
+      this.size--;
+      return;
+    }
+
+    if (this.last.value === item) {
+      let previous = this.findPrevious(this.last);
+      this.last = previous;
+      this.last.next = null;
+      this.size--;
+      return;
+    }
+
+    let current = this.first;
+    while (current.next) {
+      if (current.next.value === item) {
+        current.next = current.next.next;
+        return;
+      }
+      current = current.next;
+    }
+
+    this.size--;
+  }
+
+  findPrevious(node) {
+    let current = this.first;
+
+    while (current !== null) {
+      if (current.next === node) return current;
+      current = current.next;
+    }
+
+    return null;
+  }
+
+  isEmpty() {
+    return this.first == null;
+  }
+
+  // Iterate using a generator: It is game changer for linkedlist
+  *[Symbol.iterator]() {
+    let current = this.first;
+    while (current) {
+      yield current.value;
+      current = current.next;
+    }
+  }
+}
+
+class HashTable {
+  constructor(size) {
+    this.entries = new Array(size); // size of the table
+  }
+
+  set(key, value) {
+    let index = this._hash(key);
+
+    if (!this.entries[index]) {
+      this.entries[index] = new LinkedList();
+    }
+
+    let bucket = this.entries[index];
+
+    for (let entry of bucket) {
+      // itarator done a good job here
+      if (entry.key === key) {
+        entry.value = value;
+        return;
+      }
+    }
+
+    let entry = { key, value };
+    bucket.addLast(entry);
+  }
+
+  get(key) {
+    let index = this._hash(key);
+    let bucket = this.entries[index];
+
+    if (!bucket) return null;
+
+    for (let entry of bucket) {
+      if (entry.key === key) return entry.value;
+    }
+
+    return null;
+  }
+
+  remove(key) {
+    let index = this._hash(key);
+    let bucket = this.entries[index];
+
+    if (!bucket) return;
+    for (let entry of bucket) {
+      if (entry.key === key) {
+        bucket.remove(entry);
+        return;
+      }
+    }
+
+    throw new Error("Key Not Exist");
+  }
+
+  _hash(key) {
+    // private method
+    return key % this.entries.length;
+  }
+}
+
+let hashTable = new HashTable(5);
+hashTable.set(3, "OK-3");
+hashTable.set(4, "OK-4");
+hashTable.set(9, "OK-9");
+hashTable.set(13, "OK-13");
+
+console.log(hashTable.get(9));
+console.log(hashTable.get(3));
+console.log(hashTable.get(4));
+console.log(hashTable.get(13));
+hashTable.remove(9);
+hashTable.remove(4);
+// hashTable.remove(44);
+console.log(hashTable.get(9));
+console.log(hashTable.get(4));
+console.log(hashTable.get(13));
+
+```
+
 
 ## Refactoring
 
@@ -2131,6 +2298,88 @@ public class HashTable {
     }
 
 }
+```
+
+## Refactoring(JavaScript)
+```js
+class HashTable {
+  constructor(size) {
+    this.entries = new Array(size); // size of the table
+  }
+
+  set(key, value) {
+    let index = this._hash(key);
+
+    if (!this.entries[index]) {
+      this.entries[index] = new LinkedList();
+    }
+
+    let bucket = this.entries[index];
+
+    let entry = this.getEntry(key);
+    if (entry !== null) {
+      entry.value = value;
+      return;
+    }
+
+    entry = { key, value };
+    bucket.addLast(entry);
+  }
+
+  get(key) {
+    let entry = this.getEntry(key);
+
+    return entry === null ? entry : entry.value;
+  }
+
+  remove(key) {
+    let entry = this.getEntry(key);
+    if (entry == null) throw new Error("IllegalStateException");
+
+    this.getBucket(key).remove(entry);
+  }
+
+  getBucket(key) {
+    return this.entries[this._hash(key)];
+  }
+
+  getEntry(key) {
+    let bucket = this.getBucket(key);
+
+    if (bucket !== null) {
+      for (let entry of bucket) {
+        if (entry.key === key) {
+          return entry;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  _hash(key) {
+    // private method
+    return key % this.entries.length;
+  }
+}
+
+let hashTable = new HashTable(5);
+hashTable.set(3, "OK-3");
+hashTable.set(4, "OK-4");
+hashTable.set(9, "OK-9");
+hashTable.set(13, "OK-13");
+
+console.log(hashTable.get(9));
+console.log(hashTable.get(3));
+console.log(hashTable.get(4));
+console.log(hashTable.get(13));
+hashTable.remove(9);
+hashTable.remove(4);
+// hashTable.remove(44);
+console.log(hashTable.get(9));
+console.log(hashTable.get(4));
+console.log(hashTable.get(13));
+
 ```
 
 # Algorithms
